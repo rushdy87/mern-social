@@ -15,7 +15,7 @@ const Profile = () => {
       setUser(data);
     };
     fetchUser();
-  }, []);
+  }, [username]);
 
   const publicFolder = process.env.REACT_APP_PUBLIC_FOLDER;
 
