@@ -1,14 +1,17 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 import { Topbar, Sidebar, Feed, Rightbar } from '../../components';
 import './Profile.css';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
 
+  const { username } = useParams();
+
   useEffect(() => {
     const fetchUser = async () => {
-      const { data } = await axios.get('/api/users?username=M_Cohen');
+      const { data } = await axios.get(`/api/users?username=${username}`);
       setUser(data);
     };
     fetchUser();
@@ -46,7 +49,7 @@ const Profile = () => {
             </div>
           </div>
           <div className="profile-right-bottom">
-            <Feed username="M_Cohen" />
+            <Feed username={username} />
             <Rightbar user={user} />
           </div>
         </div>
