@@ -8,7 +8,7 @@ router.put('/:id', userController.updateUser);
 router.delete('/:id', userController.deleteUser);
 
 // Get a user
-router.get('/:id', userController.getUser);
+router.get('/', userController.getUser);
 
 // Follow a user
 router.put('/:id/follow', userController.putFollow);

@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { MoreVert } from '@mui/icons-material';
 import axios from 'axios';
+import { MoreVert } from '@mui/icons-material';
 import moment from 'moment';
+import { Link } from 'react-router-dom';
 import './Post.css';
 
 const Post = ({ post }) => {
@@ -11,7 +12,7 @@ const Post = ({ post }) => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const { data } = await axios.get(`/api/users/${post.userId}`);
+      const { data } = await axios.get(`/api/users?userId=${post.userId}`);
       setUser(data);
     };
     fetchUser();
@@ -29,14 +30,16 @@ const Post = ({ post }) => {
       <div className="post-wrapper">
         <div className="post-top">
           <div className="post-top-left">
-            <img
-              src={
-                user?.profilePicture ||
-                `${publicFolder}person/blank-profile.png`
-              }
-              alt=""
-              className="post-profile-image"
-            />
+            <Link to={`/profile/${user?.username}`} className="link">
+              <img
+                src={
+                  user?.profilePicture ||
+                  `${publicFolder}person/blank-profile.png`
+                }
+                alt=""
+                className="post-profile-image"
+              />
+            </Link>
             <span className="post-username">{user?.username}</span>
             <span className="post-date">{moment().from(post?.createdAt)}</span>
           </div>

@@ -91,3 +91,18 @@ exports.getTimelinePosts = async (req, res) => {
     res.status(500).json(error);
   }
 };
+
+exports.getAllUserPosts = async (req, res) => {
+  const { username } = req.params;
+  try {
+    const user = await User.findOne({ username });
+    if (user) {
+      const posts = await Post.find({ userId: user._id });
+      res.status(200).json(posts);
+    } else {
+      res.status(404).json('There is no User with this username');
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};

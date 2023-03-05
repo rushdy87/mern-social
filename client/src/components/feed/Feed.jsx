@@ -3,22 +3,22 @@ import axios from 'axios';
 import './Feed.css';
 import { Share, Post } from '../';
 
-const Feed = () => {
+const Feed = ({ username }) => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const { data } = await axios.get(
-          '/api/posts/timeline/6400135ff296042274225df1'
-        );
+        const { data } = username
+          ? await axios.get(`/api/posts/profile/${username}`)
+          : await axios.get('/api/posts/timeline/6400135ff296042274225df1');
         setPosts(data);
       } catch (error) {
         console.log(error);
       }
     };
     fetchPost();
-  }, []);
+  }, [username]);
 
   return (
     <div className="feed">
