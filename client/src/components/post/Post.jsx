@@ -1,22 +1,21 @@
 import { useState, useEffect } from 'react';
 import { MoreVert } from '@mui/icons-material';
 import axios from 'axios';
+import moment from 'moment';
 import './Post.css';
 
 const Post = ({ post }) => {
-  const [like, setLike] = useState(post.like);
+  const [like, setLike] = useState(post.likes);
   const [isLiked, setIsLiked] = useState(false);
   const [user, setUser] = useState(null);
 
-  const { desc, img, date, userId, comment } = post;
-
   useEffect(() => {
     const fetchUser = async () => {
-      const { data } = await axios.get(`/api/users/${userId}`);
+      const { data } = await axios.get(`/api/users/${post.userId}`);
       setUser(data);
     };
     fetchUser();
-  }, [userId]);
+  }, [post.userId]);
 
   const publicFolder = process.env.REACT_APP_PUBLIC_FOLDER;
 
@@ -31,20 +30,23 @@ const Post = ({ post }) => {
         <div className="post-top">
           <div className="post-top-left">
             <img
-              src={publicFolder + user?.profilePicture}
+              src={
+                user?.profilePicture ||
+                `${publicFolder}person/blank-profile.png`
+              }
               alt=""
               className="post-profile-image"
             />
             <span className="post-username">{user?.username}</span>
-            <span className="post-date">{date}</span>
+            <span className="post-date">{moment().from(post?.createdAt)}</span>
           </div>
           <div className="post-top-right">
             <MoreVert />
           </div>
         </div>
         <div className="post-center">
-          {desc && <span className="post-text">{desc}</span>}
-          <img src={img} alt="" className="post-image" />
+          {post?.desc && <span className="post-text">{post.desc}</span>}
+          <img src={post?.img} alt="" className="post-image" />
         </div>
         <div className="post-bottom">
           <div className="post-bottom-left">
@@ -63,7 +65,7 @@ const Post = ({ post }) => {
             <span className="post-like-counter">{like} people like it</span>
           </div>
           <div className="post-bottom-right">
-            <span className="post-comment-text">{comment} Comments</span>
+            <span className="post-comment-text">{post?.comment} Comments</span>
           </div>
         </div>
       </div>
