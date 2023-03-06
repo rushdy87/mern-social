@@ -25,21 +25,22 @@ exports.postRegister = async (req, res) => {
 };
 
 exports.postLogin = async (req, res) => {
-  const { email, password } = req.body;
-
   try {
     // fetch user from db
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: req.body.email });
     if (!user) {
       res.status(404).send('User not found');
     }
     // compare password
-    const validPAssword = await bcrypt.compare(password, user.password);
+    const validPAssword = await bcrypt.compare(
+      req.body.password,
+      user.password
+    );
     if (!validPAssword) {
       res.status(400).send('Wrong Password');
     }
-
-    res.status(200).json(user);
+    const { password, updatedAt, ...other } = user._doc;
+    res.status(200).json(other);
   } catch (error) {
     res.status(500).json(error);
   }
