@@ -1,9 +1,52 @@
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 import './Rightbar.css';
 import { Users } from '../../dummyData';
 import { Online } from '../';
 
 const Rightbar = ({ user }) => {
+  const [friends, setfriends] = useState([]);
+
   const publicFolder = process.env.REACT_APP_PUBLIC_FOLDER;
+
+  useEffect(() => {
+    if (user) {
+      const getFriends = async () => {
+        try {
+          const res = await axios.get(`/api/users/friends/${user._id}`);
+          setfriends(res.data);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      getFriends();
+    }
+  }, [user]);
+
+  const renderFrinds = friends.map((friend) => {
+    return (
+      <Link
+        to={`/profile/${friend?.username}`}
+        key={friend?._id}
+        className="link"
+      >
+        <div className="rightbar-following">
+          <img
+            src={
+              friend?.profilePicture ||
+              `${publicFolder}person/blank-profile.png`
+            }
+            alt=""
+            className="rightbar-following-image"
+          />
+          <span className="rightbar-following-username">
+            {friend?.username}
+          </span>
+        </div>
+      </Link>
+    );
+  });
 
   const HomeRightbar = () => {
     return (
@@ -49,61 +92,8 @@ const Rightbar = ({ user }) => {
             </span>
           </div>
         </div>
-        <h4 className="rightbar-title">User frinds</h4>
-        <div className="rightbar-followings">
-          <div className="rightbar-following">
-            <img
-              src="/assets/person/2.jpeg"
-              alt=""
-              className="rightbar-following-image"
-            />
-            <span className="rightbar-following-username">
-              Jody Abo Khamies
-            </span>
-          </div>
-          <div className="rightbar-following">
-            <img
-              src={`${publicFolder}post/3.jpeg`}
-              alt=""
-              className="rightbar-following-image"
-            />
-            <span className="rightbar-following-username">Asaad Khrshwf</span>
-          </div>
-          <div className="rightbar-following">
-            <img
-              src={`${publicFolder}post/4.jpeg`}
-              alt=""
-              className="rightbar-following-image"
-            />
-            <span className="rightbar-following-username">
-              Abdel Slam Elbesa
-            </span>
-          </div>
-          <div className="rightbar-following">
-            <img
-              src={`${publicFolder}post/5.jpeg`}
-              alt=""
-              className="rightbar-following-image"
-            />
-            <span className="rightbar-following-username">Adel Elfsad</span>
-          </div>
-          <div className="rightbar-following">
-            <img
-              src={`${publicFolder}post/6.jpeg`}
-              alt=""
-              className="rightbar-following-image"
-            />
-            <span className="rightbar-following-username">Abu Shamlah</span>
-          </div>
-          <div className="rightbar-following">
-            <img
-              src={`${publicFolder}post/7.jpeg`}
-              alt=""
-              className="rightbar-following-image"
-            />
-            <span className="rightbar-following-username">Abu Nader</span>
-          </div>
-        </div>
+        <h4 className="rightbar-title">User friends</h4>
+        <div className="rightbar-followings">{renderFrinds}</div>
       </>
     );
   };

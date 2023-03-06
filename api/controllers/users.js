@@ -56,6 +56,28 @@ exports.getUser = async (req, res) => {
   }
 };
 
+exports.getFriends = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const user = await User.findById(userId);
+
+    const frindes = await Promise.all(
+      user.followings.map((followerId) => User.findById(followerId))
+    );
+
+    const frindesList = frindes.map(({ _id, username, profilePicture }) => ({
+      _id,
+      username,
+      profilePicture,
+    }));
+
+    res.status(200).json(frindesList);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+
 exports.putFollow = async (req, res) => {
   const { id } = req.params;
   const { userId } = req.body;

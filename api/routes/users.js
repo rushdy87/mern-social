@@ -10,6 +10,9 @@ router.delete('/:id', userController.deleteUser);
 // Get a user
 router.get('/', userController.getUser);
 
+// Get followers users
+router.get('/friends/:userId', userController.getFriends);
+
 // Follow a user
 router.put('/:id/follow', userController.putFollow);
 
