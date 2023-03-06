@@ -79,14 +79,21 @@ exports.getTimelinePosts = async (req, res) => {
 
   try {
     const currentUser = await User.findById(userId);
-    const userPosts = await Post.find({ userId: currentUser._id });
+    const userPosts = await Post.find({ userId: currentUser._id }).sort({
+      createdAt: -1,
+    }); // sort by createdAt in descending order
     const followingsPosts = await Promise.all(
       currentUser.followings.map((followingId) => {
-        return Post.find({ userId: followingId });
+        return Post.find({ userId: followingId }).sort({ createdAt: -1 }); // sort by createdAt in descending order
       })
     );
-    console.log(followingsPosts);
-    res.status(200).json([...userPosts, ...followingsPosts.flat()]);
+    res
+      .status(200)
+      .json(
+        [...userPosts, ...followingsPosts.flat()].sort(
+          (a, b) => b.createdAt - a.createdAt
+        )
+      ); // sort by createdAt in descending order
   } catch (error) {
     res.status(500).json(error);
   }
@@ -97,7 +104,9 @@ exports.getAllUserPosts = async (req, res) => {
   try {
     const user = await User.findOne({ username });
     if (user) {
-      const posts = await Post.find({ userId: user._id });
+      const posts = await Post.find({ userId: user._id }).sort({
+        createdAt: -1,
+      });
       res.status(200).json(posts);
     } else {
       res.status(404).json('There is no User with this username');
