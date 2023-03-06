@@ -61,7 +61,15 @@ const Post = ({ post }) => {
         </div>
         <div className="post-center">
           {post?.desc && <span className="post-text">{post.desc}</span>}
-          <img src={post?.img} alt="" className="post-image" />
+          {post?.img && (
+            <img
+              src={
+                post?.img.includes('http') ? post.img : publicFolder + post.img
+              }
+              alt=""
+              className="post-image"
+            />
+          )}
         </div>
         <div className="post-bottom">
           <div className="post-bottom-left">
