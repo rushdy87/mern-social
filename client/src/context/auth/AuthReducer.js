@@ -11,6 +11,26 @@ export const AuthReducer = (state, action) => {
     case LOGIN_ACTION_TYPES.LOGIN_FAILURE:
       return { user: null, isFetching: false, error: action.payload };
 
+    case 'FOLLOW_SUCCESS':
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          followings: [...state.user.followings, action.payload],
+        },
+      };
+
+    case 'UNFOLLOW_SUCCESS':
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          followings: state.user.followings.filter(
+            (uid) => uid !== action.payload
+          ),
+        },
+      };
+
     default:
       return state;
   }
